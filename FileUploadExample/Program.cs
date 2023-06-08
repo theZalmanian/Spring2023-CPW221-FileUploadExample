@@ -13,7 +13,7 @@ namespace FileUploadExample
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ProductContext>
-                (options => options.UseSqlServer( builder.Configuration.GetConnectionString("DefaultConnecion") ));
+                (options => options.UseSqlServer( builder.Configuration.GetConnectionString("DefaultConnection") ));
 
             var app = builder.Build();
 
