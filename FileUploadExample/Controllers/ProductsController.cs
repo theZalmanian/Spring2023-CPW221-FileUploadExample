@@ -56,15 +56,15 @@ namespace FileUploadExample.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductID,ProductTitle,ProductImageUrl")] Product product)
+        public async Task<IActionResult> Create(CreateProductViewModel givenProduct)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
+                _context.Add(givenProduct);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            return View(givenProduct);
         }
 
         // GET: Products/Edit/5

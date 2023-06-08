@@ -11,4 +11,11 @@ namespace FileUploadExample.Models
 
         public string ProductImageUrl { get; set; }
     }
+
+    public class CreateProductViewModel
+    {
+        public string Title { get; set; }
+
+        public IFormFile Image { get; set; }
+    }
 }
