@@ -14,9 +14,12 @@ namespace FileUploadExample.Controllers
     {
         private readonly ProductContext _context;
 
-        public ProductsController(ProductContext context)
+        private readonly IWebHostEnvironment _enviorment;
+
+        public ProductsController(ProductContext context, IWebHostEnvironment enviorment)
         {
             _context = context;
+            _enviorment = enviorment;
         }
 
         // GET: Products
@@ -60,7 +63,28 @@ namespace FileUploadExample.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(givenProduct);
+                // Generate unique file name
+                string fileName = Guid.NewGuid().ToString();
+
+                // Add the extension of the given image to the end of the file name
+                fileName += Path.GetExtension(givenProduct.Image.FileName);
+
+                // Get the upload path for the sites images folder
+                string uploadPath = Path.Combine(_enviorment.WebRootPath, "images", fileName);
+
+                // Save given image to file system
+                using Stream fileStream = new FileStream(uploadPath, FileMode.Create);
+                await givenProduct.Image.CopyToAsync(fileStream);
+
+                // Map data from VM to Product
+                Product newProduct = new()
+                {
+                    ProductTitle = givenProduct.Title,
+                    ProductImageUrl = fileName
+                };
+
+                // Add to DB
+                _context.Add(newProduct);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
